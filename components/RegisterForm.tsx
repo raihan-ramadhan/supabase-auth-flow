@@ -1,6 +1,7 @@
 import Link from "next/link";
-import Separator from "./Separator";
+
 import { Input } from "./Input";
+import Separator from "./Separator";
 
 const RegisterForm = () => {
   return (
