@@ -72,7 +72,7 @@ const LoginForm = () => {
           <>
             <Input type="text" placeholder="Password" />
             <div className="flex flex-col">
-              <Link href={"/forgot-password"} className="text-sm text-blue-400 underline">
+              <Link href={"/forgot-password"} className="text-sm text-blue-400 underline w-fit">
                 Forgot Password?
               </Link>
               <span className="text-sm">
@@ -86,7 +86,7 @@ const LoginForm = () => {
         ) : null}
         <button
           type="submit"
-          className="bg-blue-400 text-background w-full py-3 px-1.5 rounded-2xl block cursor-pointer active:bg-blue-400/80 hover:bg-blue-400/95 font-bold"
+          className="bg-blue-400 text-background w-full py-3 px-1.5 rounded-2xl block cursor-pointer active:bg-blue-400/80 hover:bg-blue-400/95 font-bold outline-none focus-visible:ring-2 focus-visible:ring-border"
         >
           {index === 0 ? "Send Link" : "Submit"}
         </button>
