@@ -5,6 +5,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptEslintEslintPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import playwright from "eslint-plugin-playwright";
 import prettier from "eslint-plugin-prettier";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,6 +18,24 @@ const compat = new FlatCompat({
 
 export default [
   ...compat.extends("next", "next/core-web-vitals", "prettier"),
+  {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "out/**",
+      "dist/**",
+      ".vercel/**",
+      ".cache/**",
+      "coverage/**",
+      "**/*.generated.ts",
+      "**/*.generated.tsx",
+      "public/**",
+      ".github/**",
+      ".vscode/**",
+      "storybook-static/**",
+      "tests-examples/**",
+    ],
+  },
   {
     plugins: {
       prettier,
@@ -44,7 +63,7 @@ export default [
   },
   ...compat.extends("plugin:@typescript-eslint/recommended", "prettier").map((config) => ({
     ...config,
-    files: ["**/*.+(ts|tsx)"],
+    files: ["**/*.+(ts|tsx)", "__tests__/**"],
   })),
   {
     files: ["**/*.+(ts|tsx)"],
@@ -61,6 +80,13 @@ export default [
       "@typescript-eslint/no-use-before-define": [1],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-var-requires": "off",
+    },
+  },
+  {
+    ...playwright.configs["flat/recommended"],
+    files: ["__test__/e2e/**"],
+    rules: {
+      ...playwright.configs["flat/recommended"].rules,
     },
   },
 ];

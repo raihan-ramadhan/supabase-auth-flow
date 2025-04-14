@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import FormButton from "../FormButton";
+import FormButton from "@/components/FormButton";
 
 describe("FormButton", () => {
   const mockIcon = <svg data-testid="test-icon" />;

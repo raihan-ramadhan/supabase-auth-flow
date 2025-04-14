@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import OAuthProviders from "../OAuthProviders";
+import OAuthProviders from "@/components/OAuthProviders";
 
 describe("OAuthProviders", () => {
   it("renders all five provider buttons", () => {

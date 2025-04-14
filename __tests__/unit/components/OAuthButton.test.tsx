@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import OAuthButton from "../OAuthButton";
+import OAuthButton from "@/components/OAuthButton";
 
 describe("OAuthButton", () => {
   it("renders correctly with provided props", () => {
