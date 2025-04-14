@@ -7,7 +7,7 @@ import FormButton from "./FormButton";
 import { Input } from "./Input";
 import Separator from "./Separator";
 
-const providers: {
+export const providers: {
   provider_name: string;
   icon: React.ReactNode;
   idx: 0 | 1;
@@ -26,6 +26,7 @@ const providers: {
       </svg>
     ),
   },
+
   {
     idx: 1,
     provider_name: "Email And Password",
@@ -66,7 +67,7 @@ const LoginForm = () => {
       {CurrentProvider}
       <Separator />
       <form action="" className="flex flex-col gap-y-2">
-        <span>{providers[index].provider_name}</span>
+        <span data-testid="form-title">{providers[index].provider_name}</span>
         <Input type="text" placeholder="Email" />
         {index === 1 ? (
           <>
@@ -85,6 +86,7 @@ const LoginForm = () => {
           </>
         ) : null}
         <button
+          data-testid="submit-button"
           type="submit"
           className="bg-blue-400 text-background w-full py-3 px-1.5 rounded-2xl block cursor-pointer active:bg-blue-400/80 hover:bg-blue-400/95 font-bold outline-none focus-visible:ring-2 focus-visible:ring-border"
         >
