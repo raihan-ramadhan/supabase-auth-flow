@@ -1,11 +1,17 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useActionState, useCallback, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
+import { sendMagicLink, signInEmailAndPassword } from "@/actions/auth";
+import { emailAndPasswordSchema, emailSchema } from "../utils/auth-schema";
+import { logErrorMessages } from "../utils/utils";
+import EyeToggle from "./EyeToggle";
 import FormButton from "./FormButton";
-import { Input } from "./Input";
+import Input from "./Input";
 import Separator from "./Separator";
+import SubmitButton from "./SubmitButton";
 
 export const providers: {
   provider_name: string;
@@ -39,7 +45,16 @@ export const providers: {
 ];
 
 const LoginForm = () => {
+  const router = useRouter();
+
   const [index, setIndex] = useState<0 | 1>(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const setProvider = useCallback(
     (idx: 0 | 1) => {
@@ -62,36 +77,121 @@ const LoginForm = () => {
       ));
   }, [index, setProvider]);
 
+  const signInWithValidation = async (prevState: any, formData: FormData) => {
+    state.status = "";
+    state.message = "";
+
+    if (index === 0) {
+      const formValues = {
+        email: formData.get("email"),
+      };
+      const validatedFields = emailSchema.safeParse(formValues);
+
+      if (!validatedFields.success) {
+        return {
+          status: "error",
+          message: "Some fields are invalid. Please review your input and try again.",
+        };
+      }
+
+      return await sendMagicLink(formData);
+    } else {
+      const formValues = {
+        email: formData.get("email"),
+        password: formData.get("password"),
+      };
+
+      const validatedFields = emailAndPasswordSchema.safeParse(formValues);
+
+      if (!validatedFields.success) {
+        return {
+          status: "error",
+          message: `${logErrorMessages(
+            validatedFields.error.flatten().fieldErrors as {
+              string: string[];
+            }
+          )}`,
+        };
+      }
+      return await signInEmailAndPassword(formData);
+    }
+  };
+
+  const [state, formAction, pending] = useActionState(signInWithValidation, {
+    message: "",
+    status: "",
+  });
+
   return (
     <div className="flex flex-col gap-3">
       {CurrentProvider}
       <Separator />
-      <form action="" className="flex flex-col gap-y-2">
-        <span data-testid="form-title">{providers[index].provider_name}</span>
-        <Input type="text" placeholder="Email" />
+      <form action={formAction} className="flex flex-col gap-y-2">
+        <span data-testid="form-title" className="text-center">
+          {providers[index].provider_name}
+        </span>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          maxLength={320}
+          placeholder="Email Address"
+          autoComplete="email"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
+          value={email}
+          disabled={pending}
+          required
+        />
         {index === 1 ? (
           <>
-            <Input type="text" placeholder="Password" />
+            {/* THIS INPUT WIL NOT VISIBLE, this input just for fix warning console ↴ */}
+            {/* [DOM] Password forms should have (optionally hidden) username fields for accessibility: (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms)  */}
+            <Input
+              id="username"
+              name="username"
+              type="text"
+              autoComplete="username"
+              value={email}
+              style={{ display: "none" }}
+              readOnly
+            />
+            <div className="relative w-full">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                maxLength={320}
+                placeholder="Password"
+                autoComplete="current-password"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
+                value={password}
+                disabled={pending}
+                required
+              />
+              <EyeToggle
+                onClick={togglePasswordVisibility}
+                show={showPassword}
+                className="absolute top-1/2 -translate-y-1/2 right-3"
+              />
+            </div>
             <div className="flex flex-col">
               <Link href={"/forgot-password"} className="text-sm text-blue-400 underline w-fit">
                 Forgot Password?
               </Link>
               <span className="text-sm">
                 Don't have an account?{" "}
-                <Link href={"/register"} className="text-blue-400 underline">
+                <Link href={"/sign-up"} className="text-blue-400 underline">
                   Sign Up
                 </Link>
               </span>
             </div>
           </>
         ) : null}
-        <button
-          data-testid="submit-button"
-          type="submit"
-          className="bg-blue-400 text-background w-full py-3 px-1.5 rounded-2xl block cursor-pointer active:bg-blue-400/80 hover:bg-blue-400/95 font-bold outline-none focus-visible:ring-2 focus-visible:ring-border"
-        >
-          {index === 0 ? "Send Link" : "Submit"}
-        </button>
+
+        {state.status == "error" ? <span className="text-red-500 text-sm">{state.message}</span> : null}
+        <SubmitButton disabled={pending} isLoading={pending}>
+          <span>{index === 0 ? (pending ? "Sending" : "Send Link") : "Login"}</span>
+        </SubmitButton>
       </form>
     </div>
   );

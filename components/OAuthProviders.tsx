@@ -1,15 +1,20 @@
-import React from "react";
+"use client";
 
-import OAuthButton from "./OAuthButton";
+import React from "react";
+import { Provider } from "@supabase/supabase-js";
+
+import OAuthButton from "@/components/OAuthButton";
 
 const iconClassName = "size-full";
 
 const providers: {
-  provider_name: string;
+  name: string;
   icon: React.ReactNode;
+  provider_name: Provider;
 }[] = [
   {
-    provider_name: "Google",
+    name: "Google",
+    provider_name: "google",
     icon: (
       <svg className={iconClassName} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
         <path
@@ -31,26 +36,28 @@ const providers: {
       </svg>
     ),
   },
+  // {
+  //   name: "LinkedIn",
+  //   provider_name: "linkedin",
+  //   icon: (
+  //     <svg
+  //       className={iconClassName}
+  //       xmlns="http://www.w3.org/2000/svg"
+  //       aria-label="LinkedIn"
+  //       role="img"
+  //       viewBox="0 0 512 512"
+  //       fill="#ffffff"
+  //     >
+  //       <rect width="512" height="512" rx="15%" fill="#0077b5" />
+  //       <circle cx="142" cy="138" r="37" />
+  //       <path stroke="#ffffff" strokeWidth="66" d="M244 194v198M142 194v198" />
+  //       <path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32" />
+  //     </svg>
+  //   ),
+  // },
   {
-    provider_name: "LinkedIn",
-    icon: (
-      <svg
-        className={iconClassName}
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="LinkedIn"
-        role="img"
-        viewBox="0 0 512 512"
-        fill="#ffffff"
-      >
-        <rect width="512" height="512" rx="15%" fill="#0077b5" />
-        <circle cx="142" cy="138" r="37" />
-        <path stroke="#ffffff" strokeWidth="66" d="M244 194v198M142 194v198" />
-        <path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32" />
-      </svg>
-    ),
-  },
-  {
-    provider_name: "Github",
+    name: "Github",
+    provider_name: "github",
     icon: (
       <svg
         className={iconClassName}
@@ -76,32 +83,39 @@ const providers: {
       </svg>
     ),
   },
-  {
-    provider_name: "X",
-    icon: (
-      <svg className={iconClassName} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-        <path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z" />
-      </svg>
-    ),
-  },
-  {
-    provider_name: "Microsoft",
-    icon: (
-      <svg className={iconClassName} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
-        <path fill="#F35325" d="M1 1h6.5v6.5H1V1z" />
-        <path fill="#81BC06" d="M8.5 1H15v6.5H8.5V1z" />
-        <path fill="#05A6F0" d="M1 8.5h6.5V15H1V8.5z" />
-        <path fill="#FFBA08" d="M8.5 8.5H15V15H8.5V8.5z" />
-      </svg>
-    ),
-  },
-];
+  // {
+  //   name: "X",
+  //   provider_name: "twitter",
+  //   icon: (
+  //     <svg className={iconClassName} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  //       <path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z" />
+  //     </svg>
+  //   ),
+  // },
+  // {
+  //   name: "Microsoft",
+  //   provider_name: "azure",
+  //   icon: (
+  //     <svg className={iconClassName} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+  //       <path fill="#F35325" d="M1 1h6.5v6.5H1V1z" />
+  //       <path fill="#81BC06" d="M8.5 1H15v6.5H8.5V1z" />
+  //       <path fill="#05A6F0" d="M1 8.5h6.5V15H1V8.5z" />
+  //       <path fill="#FFBA08" d="M8.5 8.5H15V15H8.5V8.5z" />
+  //     </svg>
+  //   ),
+  // },
+] as const;
 
 const OAuthProviders = () => {
   return (
     <div className="flex flex-col gap-2">
       {providers.map((provider) => (
-        <OAuthButton key={provider.provider_name} icon={provider.icon} name={provider.provider_name} />
+        <OAuthButton
+          key={provider.name}
+          icon={provider.icon}
+          name={provider.name}
+          provider_name={provider.provider_name}
+        />
       ))}
     </div>
   );
