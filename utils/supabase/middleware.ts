@@ -38,6 +38,7 @@ export async function updateSession(request: NextRequest) {
   if (
     !user &&
     !(request.nextUrl.pathname === "/") &&
+    !request.nextUrl.pathname.startsWith("/upgrade") &&
     !request.nextUrl.pathname.startsWith("/confirm") &&
     !request.nextUrl.pathname.startsWith("/auth-error") &&
     !request.nextUrl.pathname.startsWith("/oauth") &&

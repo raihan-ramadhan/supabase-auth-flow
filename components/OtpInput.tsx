@@ -11,6 +11,11 @@ type Props = {
 export default function OtpInput({ length = 6, onChange, token }: Props) {
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
+  const triggerOtpChange = () => {
+    const otp = inputsRef.current.map((input) => input?.value || "").join("");
+    onChange(otp);
+  };
+
   const handleChange = (value: string, index: number) => {
     const currentInput = inputsRef.current[index];
     if (!currentInput) return;
@@ -47,11 +52,6 @@ export default function OtpInput({ length = 6, onChange, token }: Props) {
     if (e.key === "Backspace" && !currentInput?.value && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
-  };
-
-  const triggerOtpChange = () => {
-    const otp = inputsRef.current.map((input) => input?.value || "").join("");
-    onChange(otp);
   };
 
   return (

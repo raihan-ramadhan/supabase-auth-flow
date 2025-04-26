@@ -20,5 +20,9 @@ export async function recoverPassword({ email }: { email: string }) {
 export async function signOut() {
   const supabase = createClient();
 
-  await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
+  console.log("\x1b[1m\x1b[42m\x1b[37m%s\x1b[0m", "ERRTR", error);
+  localStorage.clear();
+  sessionStorage.clear();
+  document.cookie = "";
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 import { isEmailExist, signUpEmailAndPassword } from "@/actions/auth";
@@ -9,8 +9,6 @@ import Loader from "@/components/Loader";
 import Separator from "@/components/Separator";
 import { signUpSchema } from "@/utils/auth-schema";
 import constants from "@/utils/constants";
-import { createClient } from "@/utils/supabase/client";
-import { logErrorMessages } from "../utils/utils";
 import EyeToggle from "./EyeToggle";
 import SubmitButton from "./SubmitButton";
 
@@ -61,8 +59,6 @@ const RegisterForm = () => {
   });
 
   const signUpWithValidation = async (prevState: any, formData: FormData) => {
-    state.status = "";
-    state.message = "";
     const formValues = {
       email: formData.get("email"),
       password: formData.get("password"),
@@ -108,7 +104,7 @@ const RegisterForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pending]);
 
-  const fetchEmailCheck = async () => {
+  const fetchEmailCheck = useCallback(async () => {
     const { status } = await isEmailExist(email);
 
     if (status === constants("STATUS_SUCCESS")) {
@@ -118,7 +114,7 @@ const RegisterForm = () => {
       setEmailIsUsed(false);
     }
     setEmailChecking(false);
-  };
+  }, [email, emailIsUsed]);
 
   // debounce with 1s delay after pause type
   useEffect(() => {
@@ -134,7 +130,7 @@ const RegisterForm = () => {
         clearTimeout(delay);
       };
     }
-  }, [email]);
+  }, [email, emailError, fetchEmailCheck]);
 
   return (
     <div className="flex flex-col gap-2">

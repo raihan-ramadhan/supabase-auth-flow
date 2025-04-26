@@ -2,7 +2,6 @@
 
 import React, { useActionState, useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { sendMagicLink, signInEmailAndPassword } from "@/actions/auth";
 import { emailAndPasswordSchema, emailSchema } from "../utils/auth-schema";
@@ -20,6 +19,15 @@ export const providers: {
 }[] = [
   {
     idx: 0,
+    provider_name: "Email And Password",
+    icon: (
+      <svg className="size-full" xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 24 24">
+        <path d="M22,5V9L12,13,2,9V5A1,1,0,0,1,3,4H21A1,1,0,0,1,22,5ZM2,11.154V19a1,1,0,0,0,1,1H21a1,1,0,0,0,1-1V11.154l-10,4Z" />
+      </svg>
+    ),
+  },
+  {
+    idx: 1,
     provider_name: "Magic Link",
     icon: (
       <svg className="size-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
@@ -32,21 +40,9 @@ export const providers: {
       </svg>
     ),
   },
-
-  {
-    idx: 1,
-    provider_name: "Email And Password",
-    icon: (
-      <svg className="size-full" xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 24 24">
-        <path d="M22,5V9L12,13,2,9V5A1,1,0,0,1,3,4H21A1,1,0,0,1,22,5ZM2,11.154V19a1,1,0,0,0,1,1H21a1,1,0,0,0,1-1V11.154l-10,4Z" />
-      </svg>
-    ),
-  },
 ];
 
 const LoginForm = () => {
-  const router = useRouter();
-
   const [index, setIndex] = useState<0 | 1>(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,24 +74,7 @@ const LoginForm = () => {
   }, [index, setProvider]);
 
   const signInWithValidation = async (prevState: any, formData: FormData) => {
-    state.status = "";
-    state.message = "";
-
     if (index === 0) {
-      const formValues = {
-        email: formData.get("email"),
-      };
-      const validatedFields = emailSchema.safeParse(formValues);
-
-      if (!validatedFields.success) {
-        return {
-          status: "error",
-          message: "Some fields are invalid. Please review your input and try again.",
-        };
-      }
-
-      return await sendMagicLink(formData);
-    } else {
       const formValues = {
         email: formData.get("email"),
         password: formData.get("password"),
@@ -114,6 +93,20 @@ const LoginForm = () => {
         };
       }
       return await signInEmailAndPassword(formData);
+    } else {
+      const formValues = {
+        email: formData.get("email"),
+      };
+      const validatedFields = emailSchema.safeParse(formValues);
+
+      if (!validatedFields.success) {
+        return {
+          status: "error",
+          message: "Some fields are invalid. Please review your input and try again.",
+        };
+      }
+
+      return await sendMagicLink(formData);
     }
   };
 
@@ -142,7 +135,7 @@ const LoginForm = () => {
           disabled={pending}
           required
         />
-        {index === 1 ? (
+        {index === 0 ? (
           <>
             {/* THIS INPUT WIL NOT VISIBLE, this input just for fix warning console ↴ */}
             {/* [DOM] Password forms should have (optionally hidden) username fields for accessibility: (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms)  */}
@@ -190,7 +183,7 @@ const LoginForm = () => {
 
         {state.status == "error" ? <span className="text-red-500 text-sm">{state.message}</span> : null}
         <SubmitButton disabled={pending} isLoading={pending}>
-          <span>{index === 0 ? (pending ? "Sending" : "Send Link") : "Login"}</span>
+          <span>{index === 0 ? "Login" : pending ? "Sending" : "Send Link"}</span>
         </SubmitButton>
       </form>
     </div>

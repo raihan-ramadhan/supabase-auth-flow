@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 
 import Input from "@/components/Input";
 import { updatePasswordSchema } from "@/utils/auth-schema";
@@ -37,9 +37,6 @@ const UpdatePassword = ({ code }: { code?: string }) => {
   });
 
   const updatePasswordWithValidation = async (prevState: any, formData: FormData) => {
-    state.status = "";
-    state.message = "";
-
     const formValues = {
       password: formData.get("password"),
       confirmPassword: formData.get("confirmPassword"),
@@ -116,7 +113,7 @@ const UpdatePassword = ({ code }: { code?: string }) => {
       ) : null}
 
       {state.status === "error" ? <div className="text-center text-red-700 text-sm">{state.message}</div> : null}
-      <SubmitButton disabled={pending} isLoading={pending}>
+      <SubmitButton isLoading={pending}>
         {pending ? <span>Updating</span> : <span>Update your password</span>}
       </SubmitButton>
     </form>

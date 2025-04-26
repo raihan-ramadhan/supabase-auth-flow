@@ -15,7 +15,8 @@ const LogoutButton = () => {
     startTransition(async () => {
       try {
         await signOut();
-        router.push("/sign-in");
+
+        router.refresh();
       } catch (error) {
         console.log("Error signing out:", error);
       }
@@ -25,7 +26,7 @@ const LogoutButton = () => {
   return (
     <button className="cursor-pointer flex items-center gap-1" onClick={handleLogout}>
       {pending ? <Loader /> : null}
-      Log Out
+      Log out
     </button>
   );
 };

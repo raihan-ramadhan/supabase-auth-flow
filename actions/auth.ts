@@ -18,7 +18,7 @@ export async function getUserSession() {
   }
 
   return {
-    status: constants("STATUS_SUCCESS"),
+    status: constants("STATUS_SUCCESS") as "success",
     user: data.user,
   };
 }
@@ -30,6 +30,9 @@ export async function signInWithOAuth(provider_name: Provider) {
     provider: provider_name,
     options: {
       redirectTo: `${origin}/oauth?next=/dashboard`,
+      queryParams: {
+        prompt: "select_account",
+      },
     },
   });
 

@@ -5,6 +5,6 @@ export type ActionResponse = {
 
 export type ActionResponseWithData<DATA> = {
   status: string | number;
-  message: string | null;
+  message: string;
   data: DATA | null;
 };

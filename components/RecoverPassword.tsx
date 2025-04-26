@@ -78,7 +78,7 @@ const RecoverPassword = () => {
 
       {!!error ? <div className="text-center text-red-700 text-sm">{error}</div> : null}
 
-      <SubmitButton disabled={pending} isLoading={pending}>
+      <SubmitButton isLoading={pending}>
         {pending ? <span>Resetting</span> : <span>Reset your password</span>}
       </SubmitButton>
     </form>
